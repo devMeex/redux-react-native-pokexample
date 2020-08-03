@@ -1,11 +1,36 @@
 import React from "react";
-import { Text, View, TouchableOpacity, FlatList } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+  TextInput,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { ListItem } from "react-native-elements";
 //Acciones para dispatch
 import { getPokemonAccion, getPokemonNext } from "../reducers/pokeDucks";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const PokemonList = () => {
+  //const value = "UnString";
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem("@storage_Key", value);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("@storage_Key");
+      if (value !== null) {
+        console.log(value);
+      }
+    } catch (e) {
+      console.log(value);
+    }
+  };
   const dispatch = useDispatch();
   //store->reducer->collecion
   const pokemones = useSelector((store) => store.pokemones.array);
@@ -20,6 +45,13 @@ const PokemonList = () => {
       </TouchableOpacity>
       <TouchableOpacity onPress={() => dispatch(getPokemonNext())}>
         <Text>Siguientes 20 Pokes!</Text>
+      </TouchableOpacity>
+      <TextInput placeholder={"Ingrese cadena"}></TextInput>
+      <TouchableOpacity onPress={() => storeData("UnString")}>
+        <Text>Guardar!</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => getData()}>
+        <Text>getData</Text>
       </TouchableOpacity>
       <FlatList
         data={pokemones}
